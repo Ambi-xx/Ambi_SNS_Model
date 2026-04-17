@@ -14,9 +14,12 @@ export interface GenerationResult {
   ja: GeneratedPost;
 }
 
-export async function generatePropertyPosts(
+export type GenerationMode = 'property' | 'life';
+
+export async function generateSocialPosts(
   text: string,
-  images: string[] // Base64 strings
+  images: string[], // Base64 strings
+  mode: GenerationMode = 'property'
 ): Promise<GenerationResult> {
   const model = "gemini-3-flash-preview";
   
@@ -27,14 +30,15 @@ export async function generatePropertyPosts(
     },
   }));
 
-  const systemPrompt = `You are a professional real estate marketing expert. 
+  const propertyPrompt = `You are a professional real estate marketing expert. 
 Based on the provided property information (images and text), generate compelling social media posts for Instagram/Facebook.
-The information might be in Simplified Chinese, English, or Japanese.
-You must extract the key selling points (location, price, features, amenities) and generate posts in THREE languages: 
-1. Simplified Chinese (zh)
-2. English (en)
-3. Japanese (ja)
+Extract key selling points (location, price, features) and generate posts in THREE languages: Simplified Chinese (zh), English (en), and Japanese (ja).`;
 
+  const lifePrompt = `You are a creative lifestyle blogger and thought leader. 
+Based on the provided input (images and text/thoughts), generate engaging, relatable, and inspiring social media posts.
+The vibe should be authentic, professional yet personal. Generate posts in THREE languages: Simplified Chinese (zh), English (en), and Japanese (ja).`;
+
+  const systemPrompt = `${mode === 'property' ? propertyPrompt : lifePrompt}
 For each language, provide:
 - A catchy title
 - Engaging body text (using emojis appropriate for social media)
@@ -52,7 +56,7 @@ Output format: JSON exactly matching this structure:
     contents: {
       parts: [
         { text: systemPrompt },
-        { text: `Property Description Source: ${text}` },
+        { text: `Input Context: ${text}` },
         ...imageParts,
       ],
     },

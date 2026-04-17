@@ -1,6 +1,6 @@
 {
-  "name": "Global Property Social Media Pro",
-  "description": "Generate multilingual social media posts for properties from images and documents using AI.",
+  "name": "OmniPost AI - 多言語SNSクリエイター",
+  "description": "不動産物件や日常の出来事から、中・英・日の多言語SNS投稿を自動生成するAIアシスタント。",
   "requestFramePermissions": [],
   "majorCapabilities": []
 }
