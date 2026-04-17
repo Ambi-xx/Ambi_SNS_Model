@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --color-brand-primary: #4F46E5;
+  --color-brand-accent: #06B6D4;
+  --color-brand-bg: #F1F5F9;
+  --color-brand-sidebar: #0F172A;
+  --color-brand-text-main: #1E293B;
+  --color-brand-text-muted: #64748B;
+  --color-brand-border: #E2E8F0;
+}
+
+@layer base {
+  body {
+    @apply font-sans bg-brand-bg text-brand-text-main antialiased overflow-hidden;
+  }
+}
+
+.logo-gradient {
+  background: linear-gradient(135deg, #818CF8, #2DD4BF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.glass {
+  background: white;
+  border: 1px solid var(--color-brand-border);
+}
+
+.shadow-sleek {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.shadow-card {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
