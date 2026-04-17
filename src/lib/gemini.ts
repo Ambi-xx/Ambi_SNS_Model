@@ -15,11 +15,13 @@ export interface GenerationResult {
 }
 
 export type GenerationMode = 'property' | 'life';
+export type ToneStyle = 'professional' | 'friendly' | 'storyteller' | 'minimalist';
 
 export async function generateSocialPosts(
   text: string,
   images: string[], // Base64 strings
-  mode: GenerationMode = 'property'
+  mode: GenerationMode = 'property',
+  style: ToneStyle = 'storyteller'
 ): Promise<GenerationResult> {
   if (!process.env.GEMINI_API_KEY) {
     throw new Error('API_KEY_MISSING');
@@ -33,13 +35,28 @@ export async function generateSocialPosts(
     },
   }));
 
-  const propertyPrompt = `You are a professional real estate marketing expert. 
-Based on the provided property information (images and text), generate compelling social media posts for Instagram/Facebook.
-Extract key selling points (location, price, features) and generate posts in THREE languages: Simplified Chinese (zh), English (en), and Japanese (ja).`;
+  const propertyPrompt = `You are an expert Social Media Copywriter and Local Local Resident who hates generic AI-generated marketing.
+Your goal is to transform property data into authentic, "human-written" stories that resonate with people's emotions.
 
-  const lifePrompt = `You are a creative lifestyle blogger and thought leader. 
-Based on the provided input (images and text/thoughts), generate engaging, relatable, and inspiring social media posts.
-The vibe should be authentic, professional yet personal. Generate posts in THREE languages: Simplified Chinese (zh), English (en), and Japanese (ja).`;
+STYLE GUIDELINES for "Human-like" (De-AI-fied) Content:
+1. NO CLICHES: Avoid words like "Luxurious", "Dream home", "Perfectly situated", "Elevate", "Discover", "Unveiling".
+2. PERSONAL VIEWPOINT: Use phrases like "I noticed...", "The best part about this place is...", "Imagine waking up here...".
+3. VARIED SENTENCE STRUCTURE: Use short, punchy sentences. Don't start every paragraph with "This [property]...".
+4. NO Subject-Verb-Adjective formulas. Talk like you're telling a friend over coffee.
+5. LOCAL TRIVIA: If the location is provided, mention one specific vibe or detail that only a human would appreciate.
+
+TONE: ${style} (adjust the depth of storytelling vs facts accordingly).`;
+
+  const lifePrompt = `You are a popular Lifestyle Influencer who is known for being authentic, vulnerable, and slightly witty.
+Your goal is to take minimal notes and turn them into a post that feels like a private diary entry or a text message to a best friend.
+
+STYLE GUIDELINES:
+1. BE RAW: Use colloquialisms. Avoid being overly formal or "inspiring" in a fake way.
+2. NO CORPORATE SPEAK: No "Let's explore...", "In this fast-paced world...".
+3. MICRO-MOMENTS: Focus on one small detail (the smell of coffee, the angle of the sun) rather than broad generalizations.
+4. USE RHETORICAL QUESTIONS: "Is it just me, or...?", "The truth is...".
+
+TONE: ${style}.`;
 
   const systemPrompt = `${mode === 'property' ? propertyPrompt : lifePrompt}
 For each language, provide:

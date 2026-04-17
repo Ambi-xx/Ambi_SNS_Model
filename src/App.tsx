@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { extractTextFromPdf } from './lib/pdf';
-import { generateSocialPosts, GenerationResult, GenerationMode } from './lib/gemini';
+import { generateSocialPosts, GenerationResult, GenerationMode, ToneStyle } from './lib/gemini';
 
 interface PropertyAsset {
   id: string;
@@ -41,7 +41,8 @@ export default function App() {
   const [isEnhanced, setIsEnhanced] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState<GenerationMode>('property');
-  const [history, setHistory] = useState<(GenerationResult & { id: string, timestamp: number, mode: GenerationMode })[]>([]);
+  const [style, setStyle] = useState<ToneStyle>('storyteller');
+  const [history, setHistory] = useState<(GenerationResult & { id: string, timestamp: number, mode: GenerationMode, style: ToneStyle })[]>([]);
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     const newAssets: PropertyAsset[] = await Promise.all(
@@ -97,9 +98,9 @@ export default function App() {
       const extractedText = assets.filter(a => a.type === 'pdf').map(a => a.content).join('\n');
       const combinedText = `Description: ${description}\n\nExtracted from docs: ${extractedText}`;
       
-      const response = await generateSocialPosts(combinedText, images, mode);
+      const response = await generateSocialPosts(combinedText, images, mode, style);
       setResults(response);
-      setHistory(prev => [{ ...response, id: Math.random().toString(36).substring(7), timestamp: Date.now(), mode }, ...prev]);
+      setHistory(prev => [{ ...response, id: Math.random().toString(36).substring(7), timestamp: Date.now(), mode, style }, ...prev]);
     } catch (err: any) {
       if (err.message === 'API_KEY_MISSING') {
         setError('APIキーが設定されていません。GitHubのSettings > SecretsでGEMINI_API_KEYを設定してください。');
@@ -198,6 +199,31 @@ export default function App() {
                   </button>
                 </div>
               </header>
+
+              <div className="flex flex-col gap-2 bg-white/50 p-4 rounded-xl border border-brand-border mb-4">
+                <label className="text-[11px] font-bold text-brand-text-muted uppercase">スタイル / トーン</label>
+                <div className="grid grid-cols-4 gap-2">
+                  {[
+                    { id: 'storyteller', label: 'ストーリー', icon: <Sparkles size={12} /> },
+                    { id: 'professional', label: 'プロ', icon: <Building2 size={12} /> },
+                    { id: 'friendly', label: 'フレンドリー', icon: <Coffee size={12} /> },
+                    { id: 'minimalist', label: 'ミニマル', icon: <FileText size={12} /> },
+                  ].map((s) => (
+                    <button
+                      key={s.id}
+                      onClick={() => setStyle(s.id as ToneStyle)}
+                      className={`flex items-center justify-center gap-1.5 py-2 px-1 rounded-lg text-[10px] font-bold transition-all border ${
+                        style === s.id 
+                          ? 'bg-brand-primary text-white border-brand-primary shadow-sm' 
+                          : 'bg-white text-brand-text-muted border-brand-border hover:border-brand-primary'
+                      }`}
+                    >
+                      {s.icon}
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
               <section className="grid grid-cols-2 gap-4">
                 <div 
