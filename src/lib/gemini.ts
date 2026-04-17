@@ -1,6 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
 
 export interface GeneratedPost {
   title: string;
@@ -21,6 +21,9 @@ export async function generateSocialPosts(
   images: string[], // Base64 strings
   mode: GenerationMode = 'property'
 ): Promise<GenerationResult> {
+  if (!process.env.GEMINI_API_KEY) {
+    throw new Error('API_KEY_MISSING');
+  }
   const model = "gemini-3-flash-preview";
   
   const imageParts = images.map((base64) => ({

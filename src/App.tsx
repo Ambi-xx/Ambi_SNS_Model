@@ -100,8 +100,12 @@ export default function App() {
       const response = await generateSocialPosts(combinedText, images, mode);
       setResults(response);
       setHistory(prev => [{ ...response, id: Math.random().toString(36).substring(7), timestamp: Date.now(), mode }, ...prev]);
-    } catch (err) {
-      setError('生成に失敗しました。もう一度お試しください。');
+    } catch (err: any) {
+      if (err.message === 'API_KEY_MISSING') {
+        setError('APIキーが設定されていません。GitHubのSettings > SecretsでGEMINI_API_KEYを設定してください。');
+      } else {
+        setError('生成に失敗しました。もう一度お試しください。');
+      }
       console.error(err);
     } finally {
       setIsGenerating(false);
