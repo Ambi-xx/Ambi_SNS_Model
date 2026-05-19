@@ -67,6 +67,7 @@ Development Potential: The vast 5.4ha acreage and high-flow onsen sources make t
 export default function App() {
   const [selectedFlow, setSelectedFlow] = useState<GenerationMode | null>(null);
   const [activeTab, setActiveTab] = useState<'dashboard' | 'assets' | 'translations'>('dashboard');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [assets, setAssets] = useState<PropertyAsset[]>([]);
   const [description, setDescription] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
@@ -381,20 +382,51 @@ export default function App() {
   }
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-brand-bg text-brand-text-main">
+    <div className="flex min-h-screen lg:h-screen w-full overflow-x-hidden lg:overflow-hidden bg-brand-bg text-brand-text-main relative">
+      {/* Mobile Backdrop */}
+      <AnimatePresence>
+        {isSidebarOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsSidebarOpen(false)}
+            className="fixed inset-0 bg-black/60 z-[60] lg:hidden backdrop-blur-sm"
+          />
+        )}
+      </AnimatePresence>
+
       {/* Sidebar */}
-      <aside className="w-[210px] bg-brand-sidebar text-white p-5 flex flex-col gap-6 flex-shrink-0">
-        <div 
-          onClick={() => setSelectedFlow(null)}
-          className="logo-gradient font-black text-xl tracking-tighter uppercase leading-none cursor-pointer hover:opacity-85 transition-opacity flex items-center gap-2"
-        >
-          <Sparkles size={18} className="text-brand-primary shrink-0" />
-          <span className="truncate">OmniPost AI</span>
+      <aside className={`
+        fixed inset-y-0 left-0 z-[70] w-[210px] bg-brand-sidebar text-white p-5 flex flex-col gap-6 flex-shrink-0 transition-transform duration-300 ease-in-out
+        lg:relative lg:translate-x-0
+        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+      `}>
+        <div className="flex items-center justify-between lg:block">
+          <div 
+            onClick={() => {
+              setSelectedFlow(null);
+              setIsSidebarOpen(false);
+            }}
+            className="logo-gradient font-black text-xl tracking-tighter uppercase leading-none cursor-pointer hover:opacity-85 transition-opacity flex items-center gap-2"
+          >
+            <Sparkles size={18} className="text-brand-primary shrink-0" />
+            <span className="truncate">OmniPost AI</span>
+          </div>
+          <button 
+            onClick={() => setIsSidebarOpen(false)}
+            className="p-1 lg:hidden text-slate-400 hover:text-white"
+          >
+            <ArrowLeft size={20} />
+          </button>
         </div>
         
         <nav className="flex flex-col gap-1.5">
           <button 
-            onClick={() => setActiveTab('dashboard')}
+            onClick={() => {
+              setActiveTab('dashboard');
+              setIsSidebarOpen(false);
+            }}
             className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[13px] font-medium cursor-pointer transition-all ${
               activeTab === 'dashboard' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-400 hover:bg-white/5 hover:text-white'
             }`}
@@ -403,7 +435,10 @@ export default function App() {
             ダッシュボード
           </button>
           <button 
-            onClick={() => setActiveTab('assets')}
+            onClick={() => {
+              setActiveTab('assets');
+              setIsSidebarOpen(false);
+            }}
             className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[13px] font-medium cursor-pointer transition-all ${
               activeTab === 'assets' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-400 hover:bg-white/5 hover:text-white'
             }`}
@@ -412,7 +447,10 @@ export default function App() {
             アセット
           </button>
           <button 
-            onClick={() => setActiveTab('translations')}
+            onClick={() => {
+              setActiveTab('translations');
+              setIsSidebarOpen(false);
+            }}
             className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[13px] font-medium cursor-pointer transition-all ${
               activeTab === 'translations' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-400 hover:bg-white/5 hover:text-white'
             }`}
@@ -430,24 +468,42 @@ export default function App() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 grid grid-cols-[1fr_310px] gap-4 p-4 overflow-hidden">
+      <div className="flex-1 flex flex-col min-h-0 lg:h-full">
+        {/* Mobile Header */}
+        <header className="lg:hidden h-14 bg-white border-b border-brand-border flex items-center justify-between px-4 shrink-0 transition-all z-50">
+          <button 
+            onClick={() => setIsSidebarOpen(true)}
+            className="p-2 -ml-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-colors"
+          >
+            <Layout size={20} />
+          </button>
+          <div 
+            onClick={() => setSelectedFlow(null)}
+            className="logo-gradient font-black text-lg tracking-tighter uppercase leading-none cursor-pointer"
+          >
+            OmniPost AI
+          </div>
+          <div className="w-9" /> {/* Spacer for centering */}
+        </header>
+
+        <main className="flex-1 grid grid-cols-1 lg:grid-cols-[1fr_310px] gap-4 p-3 md:p-4 lg:overflow-hidden relative lg:custom-scrollbar">
         {/* Workspace */}
-        <div className="flex flex-col gap-4 overflow-y-auto pr-2 custom-scrollbar text-brand-text-main">
+        <div className="flex flex-col gap-4 lg:overflow-y-auto lg:pr-2 custom-scrollbar text-brand-text-main shrink-0">
           {activeTab === 'dashboard' && (
             <motion.div 
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex flex-col gap-4 h-full"
+              className="flex flex-col gap-4 lg:h-full"
             >
-              <header className="flex items-center justify-between">
+              <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <h3 className="text-[11px] font-bold text-brand-text-muted uppercase tracking-widest flex items-center gap-2">
                   <Sparkles size={13} className={mode === 'property' ? 'text-indigo-500' : mode === 'concept' ? 'text-emerald-500' : 'text-cyan-500'} />
                   {mode === 'property' ? '物件解析' : mode === 'concept' ? 'AI物件着想' : 'ライフスタイル'}
                 </h3>
                 
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 overflow-x-auto pb-1 md:pb-0 hide-scrollbar">
                   {/* Mode Toggles */}
-                  <div className="flex p-0.5 bg-brand-border/50 rounded-lg">
+                  <div className="flex p-0.5 bg-brand-border/50 rounded-lg shrink-0">
                     <button 
                       onClick={() => switchMode('property')}
                       className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold transition-all ${
@@ -477,7 +533,7 @@ export default function App() {
                   <div className="h-6 w-[1px] bg-brand-border/60 mx-1" />
 
                   {/* Tone Styles */}
-                  <div className="flex gap-1 items-center">
+                  <div className="flex gap-1 items-center shrink-0">
                     {[
                       { id: 'professional', label: 'プロフェッショナル', icon: <Building2 size={12} /> },
                       { id: 'friendly', label: 'フレンドリー', icon: <Coffee size={12} /> },
@@ -664,7 +720,7 @@ export default function App() {
                           {/* Editable container */}
                           <div className="p-3 bg-white flex flex-col flex-grow">
                             {/* AI Restructuring Action Block */}
-                            <div className="mb-3.5 bg-gradient-to-r from-indigo-50 to-purple-50/50 border border-indigo-100/80 rounded-xl p-3 flex flex-col sm:flex-row items-center justify-between gap-3">
+                            <div className="mb-3.5 bg-gradient-to-r from-indigo-50 to-purple-50/50 border border-indigo-100/80 rounded-xl p-3 flex flex-col items-center justify-between gap-3 lg:flex-row">
                               <div className="flex items-start gap-2.5">
                                 <div className="bg-indigo-100 text-indigo-700 p-1.5 rounded-lg shrink-0 text-xs">
                                   <Brain size={14} className="animate-pulse" />
@@ -720,44 +776,44 @@ export default function App() {
                             />
                           </div>
 
-                          {/* Apply Options */}
-                          <div className="bg-slate-100/80 px-3 py-2.5 flex flex-col sm:flex-row gap-2 justify-between items-center border-t border-brand-border">
-                            <span className="text-[10px] text-slate-500 font-bold flex items-center gap-1">
-                              抽出元文字数: <strong className="text-emerald-600">{(assets.find(a => a.id === (selectedPdfId || assets.filter(p => p.type === 'pdf')[0]?.id))?.content || '').length}</strong> 文字
-                            </span>
+                      {/* Apply Options */}
+                      <div className="bg-slate-100/80 px-3 py-2.5 flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center border-t border-brand-border">
+                        <span className="text-[10px] text-slate-500 font-bold flex items-center gap-1">
+                          抽出元文字数: <strong className="text-emerald-600">{(assets.find(a => a.id === (selectedPdfId || assets.filter(p => p.type === 'pdf')[0]?.id))?.content || '').length}</strong> 文字
+                        </span>
 
-                            <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  const textToApply = assets.find(a => a.id === (selectedPdfId || assets.filter(p => p.type === 'pdf')[0]?.id))?.content || '';
-                                  if (textToApply) {
-                                    setDescription(textToApply);
-                                    triggerSuccessAnimation('overwrite');
-                                  }
-                                }}
-                                className="bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-[10.5px] font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 shadow-sm transition-all border-none cursor-pointer"
-                                title="【窓②】の内容を完全に上書きしてこのPDF情報に更新します"
-                              >
-                                <Sparkles size={11} />
-                                テンプレートへ「上書き適用」する
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  const textToApply = assets.find(a => a.id === (selectedPdfId || assets.filter(p => p.type === 'pdf')[0]?.id))?.content || '';
-                                  if (textToApply) {
-                                    setDescription((prev) => prev ? `${prev}\n\n${textToApply}` : textToApply);
-                                    triggerSuccessAnimation('append');
-                                  }
-                                }}
-                                className="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-[10.5px] font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 shadow-sm transition-all border-none cursor-pointer"
-                                title="【窓②】の末尾に、このPDF情報を追加挿入します"
-                              >
-                                「追加で挿入」する
-                              </button>
-                            </div>
-                          </div>
+                        <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const textToApply = assets.find(a => a.id === (selectedPdfId || assets.filter(p => p.type === 'pdf')[0]?.id))?.content || '';
+                              if (textToApply) {
+                                setDescription(textToApply);
+                                triggerSuccessAnimation('overwrite');
+                              }
+                            }}
+                            className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-[10.5px] font-bold px-3 py-1.5 rounded-lg flex items-center justify-center gap-1 shadow-sm transition-all border-none cursor-pointer"
+                            title="【窓②】の内容を完全に上書きしてこのPDF情報に更新します"
+                          >
+                            <Sparkles size={11} />
+                            テンプレートへ「上書き適用」する
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const textToApply = assets.find(a => a.id === (selectedPdfId || assets.filter(p => p.type === 'pdf')[0]?.id))?.content || '';
+                              if (textToApply) {
+                                setDescription((prev) => prev ? `${prev}\n\n${textToApply}` : textToApply);
+                                triggerSuccessAnimation('append');
+                              }
+                            }}
+                            className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-[10.5px] font-bold px-3 py-1.5 rounded-lg flex items-center justify-center gap-1 shadow-sm transition-all border-none cursor-pointer"
+                            title="【窓②】の末尾に、このPDF情報を追加挿入します"
+                          >
+                            「追加で挿入」する
+                          </button>
+                        </div>
+                      </div>
                         </div>
 
                         {/* Windows 2: Official Template Draft view & editor */}
@@ -999,11 +1055,11 @@ export default function App() {
         </div>
 
         {/* Live Preview Column */}
-        <div className="flex flex-col gap-4 overflow-hidden">
+        <div className="flex flex-col gap-4 lg:overflow-hidden min-h-[500px] lg:min-h-0">
           <h3 className="text-[13px] font-semibold text-brand-text-muted uppercase tracking-wider mb-2">ライブプレビュー</h3>
           
           {results ? (
-            <div className="flex flex-col gap-4 flex-1 overflow-hidden">
+            <div className="flex flex-col gap-4 flex-1 lg:overflow-hidden">
               {/* Language Selector */}
               <div className="flex p-0.5 bg-white rounded-lg border border-brand-border shadow-sm w-full">
                 {(['en', 'zh', 'ja'] as const).map((lang) => (
@@ -1056,7 +1112,7 @@ export default function App() {
                   key={`portal-${activeLanguage}`}
                   initial={{ opacity: 0, scale: 0.98 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="flex-1 bg-white rounded-2xl border border-brand-border p-5 shadow-card overflow-y-auto custom-scrollbar flex flex-col gap-4 text-brand-text-main"
+                  className="flex-1 bg-white rounded-2xl border border-brand-border p-5 shadow-card lg:overflow-y-auto custom-scrollbar flex flex-col gap-4 text-brand-text-main"
                 >
                   <div className="flex items-center justify-between border-b pb-3 mb-1">
                     <div className="flex items-center gap-2">
@@ -1266,7 +1322,7 @@ export default function App() {
                   key={`sns-${activeLanguage}`}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="flex-1 bg-white rounded-[24px] border-[8px] border-slate-900 shadow-sleek overflow-hidden flex flex-col mb-4"
+                  className="flex-1 bg-white rounded-[24px] border-[8px] border-slate-900 shadow-sleek lg:overflow-hidden flex flex-col mb-4"
                 >
                   <div className="p-3 flex items-center gap-2 border-b border-slate-50 text-brand-text-main">
                     <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-orange-400 via-pink-500 to-indigo-600 flex items-center justify-center text-white">
@@ -1300,7 +1356,7 @@ export default function App() {
                     <span>❤️</span> <span>💬</span> <span>✈️</span>
                   </div>
 
-                  <div className="p-3 flex-1 overflow-y-auto overflow-x-hidden text-[13px] leading-relaxed select-text text-brand-text-main">
+                  <div className="p-3 flex-1 lg:overflow-y-auto overflow-x-hidden text-[13px] leading-relaxed select-text text-brand-text-main">
                     <input 
                       type="text"
                       className="font-bold mb-1 w-full bg-transparent border-none focus:outline-none"
@@ -1361,7 +1417,8 @@ export default function App() {
         </div>
       </main>
     </div>
-  );
+  </div>
+);
 }
 
 
