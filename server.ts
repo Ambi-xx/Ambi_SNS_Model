@@ -1,6 +1,5 @@
 import express from "express";
 import path from "path";
-import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 
@@ -12,16 +11,6 @@ const PORT = 3000;
 // Increase payload size for base64 images
 app.use(express.json({ limit: '50mb' }));
 
-console.log("Server environment check:", {
-  NODE_ENV: process.env.NODE_ENV,
-  VERCEL: process.env.VERCEL,
-  HAS_GEMINI_KEY: !!process.env.GEMINI_API_KEY
-});
-
-if (!process.env.GEMINI_API_KEY) {
-  console.warn("⚠️ WARNING: GEMINI_API_KEY is not defined in process.env");
-}
-
 // Lazy initialize AI client
 let ai: GoogleGenAI | null = null;
 function getAi() {
@@ -29,7 +18,7 @@ function getAi() {
     const apiKey = (process.env.GEMINI_API_KEY || "").trim();
     
     if (!apiKey || apiKey === "undefined" || apiKey === "null" || apiKey === "") {
-      throw new Error("GEMINI_API_KEY is missing. Please set it in your environment variables (Vercel: Settings > Environment Variables).");
+      throw new Error("GEMINI_API_KEY is missing. Please set it in your environment variables.");
     }
 
     ai = new GoogleGenAI({ 
@@ -49,7 +38,8 @@ app.get("/api/health", (req, res) => {
   res.json({ 
     status: "ok", 
     hasApiKey: !!process.env.GEMINI_API_KEY,
-    apiKeyLength: process.env.GEMINI_API_KEY?.length || 0
+    env: process.env.NODE_ENV,
+    isVercel: !!process.env.VERCEL
   });
 });
 
@@ -279,7 +269,8 @@ Return ONLY a single valid JSON object. No markdown block wrapper, no leading or
 // Vite middleware for development
 async function startServer() {
   if (process.env.NODE_ENV !== "production") {
-    const vite = await createViteServer({
+    const { createServer } = await import("vite");
+    const vite = await createServer({
       server: { middlewareMode: true },
       appType: "spa",
     });

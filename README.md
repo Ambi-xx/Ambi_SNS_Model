@@ -4,21 +4,23 @@
 
 ## 🚀 部署指南 (Deployment)
 
-本项目支持通过 GitHub Actions 自动部署到 GitHub Pages。
+本项目推荐通过 **Vercel** 进行部署，以支持后端 API 和环境变量保护。
 
 ### 1. 准备工作
 - 拥有一个 [Google AI Studio](https://aistudio.google.com/) 的 API Key。
+- 将此仓库推送到您的 GitHub 账号（建议设为 **Private**）。
 
-### 2. 部署到 GitHub Pages
-1. 将此仓库推送到您的 GitHub 账号。
-2. 在 GitHub 项目页面，点击 **Settings** > **Secrets and variables** > **Actions**。
-3. 点击 **New repository secret**：
-   - Name: `GEMINI_API_KEY`
-   - Value: `您的 API Key`
-4. 切换到 **Actions** 标签页，确保 "Deploy to GitHub Pages" 工作流已启用（通常推送代码后会自动触发）。
-5. 在 **Settings** > **Pages** 中，将 **Build and deployment** 的 **Source** 设置为 `GitHub Actions`。
+### 2. 部署到 Vercel
+1. 在 [Vercel](https://vercel.com/) 中导入您的 GitHub 仓库。
+2. 在 **Environment Variables** 配置中添加：
+   - `GEMINI_API_KEY`: 您的 API Key
+3. 点击 **Deploy**。
 
-### 3. 本地开发
+### 3. Payload 限制说明
+- Vercel 免费版有 4.5MB 的请求体限制。
+- 应用已内置前端压缩逻辑（图片自动缩放至 1024px），请确保上传的 PDF 页面不要过多。
+
+### 4. 本地开发
 ```bash
 # 安装依赖
 npm install
@@ -29,6 +31,7 @@ npm run dev
 
 ## 🏗️ 技术栈
 - React + Vite + TypeScript
-- Tailwind CSS (Sleek Interface)
+- Tailwind CSS / Shadcn UI
 - Google Gemini AI (gemini-3-flash-preview)
-- Framer Motion / Lucide Icons
+- Express (Backend Proxy)
+- pdfjs-dist (PDF Client-side Parsing)
