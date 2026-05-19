@@ -75,10 +75,10 @@ Please structure the final output using a clean list with section titles using s
 【土地面積】: (例: 158.0㎡ / 47.4 坪)
 【建物面積】: (例: 99.79㎡ / 29.93 坪)
 【建物構造・築年数】: (例: 木造2階建、昭和56年築)
-【現況・引渡時期】: (例: 空室、即時)
-【接道状況・制限】: (例: 南西側 7.27m公道に8.47m接道、都市計画：市街化区域、用途地域：近商、建ぺい率：80%、容積率：300%)
+【现況・引渡时期】: (例: 空室、即时)
+【接道状况・制限】: (例: 南西側 7.27m公道に8.47m接道、都市計画：市街化区域、用途地域：近商、建ぺい率：80%、容積率：300%)
 【設備・駐車場状況】: (例: 車種により駐車2台可能、都市ガス・灯油FF・灯油給湯等)
-【周辺環境・学区等】: (例: 小樽市立稲穂小学校 徒歩9分、コープさっぽろ 徒歩13分など、画像内の「交通」「周辺環境」コラムから抽出)
+【周边环境・学区等】: (例: 小樽市立稲穂小学校 徒歩9分、コープさっぽろ 徒歩13分など、画像内の「交通」「周辺環境」コラムから抽出)
 
 formatting instruction:
 - Write in a highly readable list format with line breaks.
@@ -138,8 +138,8 @@ app.post("/api/generate-social-posts", async (req, res) => {
     const toneInstructions = {
       professional: "通过物件的信息角度，尽可能详尽的，诚实遵守原版物件信息进行转述，并为客人强调资产价值、地理优势和投资潜力。语气稳重、专业且具有说服力。",
       friendly: "侧重物件周边环境，营造生活气息，分享生活细节。想象你是在向好朋友推荐一个温馨的家，语气温柔、亲切，多描述周边的便利店、公园或季节性美景。",
-      storyteller: "如果物件信息中包含历史、设计初衷或房东的故事，请敏锐提取并注入情感。通过讲故事的方式，生成一篇有背景、有温度、有灵魂的物件介绍。让读者能感受到房子的生命力。",
-      minimalist: "极简风格。直接给出核心信息：物件名称、价格、面积、构造、建成日期等，不带多余修饰，保持清爽直观。"
+      storyteller: "如果物件信息中包含历史、设计初衷 or 房东的故事，请敏锐提取并注入情感。通过讲故事的方式，生成一篇有背景、有温度、有灵魂的物件介绍。让读者能感受到房子的生命力。",
+      minimalist: "极简风格。直接给出核心信息：物件名称、价格、面积、构造、建成日期等，不带多余修饰，保持清爽直観。"
     };
 
     const propertyPrompt = `You are an expert Real Estate Analyst and Social Media Copywriter.
@@ -162,17 +162,21 @@ STYLE GUIDELINES:
 - For Japan properties, use standard units like 'tsubo' alongside 'm²' where appropriate.
 - Be precise with numbers (prices, areas, years).`;
 
-    const lifePrompt = `You are a popular Lifestyle Influencer who is known for being authentic, vulnerable, and slightly witty.
-Your goal is to take the uploaded photos and any minimal notes provided, and turn them into a high-engagement daily lifestyle post that feels like an authentic personal diary entry or a text message to a best friend.
+    const topicPrompt = `You are a sophisticated Real Estate Columnist and Strategic Analyst.
+Your goal is to take a raw topic and generate a "Topic-Inducing" social media post + 3 Deep Analysis Perspectives.
 
-STYLE GUIDELINES:
-1. PHOTO-ONLY GENERATION: If the user uploaded a photo and did NOT write any description, look closely at the image elements (e.g., scenery, weather, cozy cafes, dining, items, faces) and write a beautiful, heartfelt story entirely from the perspective of someone experiencing that moment.
-2. BE RAW & HUMAN: Use colloquialisms and natural punctuation. Avoid being overly formal, preachy, or "advertising" in a fake way. Speak in of-the-moment personal vibes.
-3. NO CORPORATE SPEAK: Never use cliché intros like "Let's explore...", "In this fast-paced world...", or "Are you ready...".
-4. MICRO-MOMENTS: Focus on one small sensory detail (e.g., the steam rising from a cup, local light filtering through the trees, a rustic wooden table) rather than broad generalizations.
-5. ENGAGING COMMENTARY: Use rhetorical questions like "Is it just me, or...?", or confessional phrases like "The truth is...".
+DEEP THINKING PROTOCOL:
+1. TOPIC DECONSTRUCTION: Break the input into distinctive segments: Economic (Yen/Rates), Policy (Visa/Tax), and Lifestyle (Climate/Environment).
+2. DATA-DRIVEN INSIGHTS: Use Search tools or background knowledge to find concrete "論拠" (e.g., Temperature gap between Bangkok and Niseko, or current Yen vs USD trend).
+3. PURPOSEFUL STRATEGY: Do not be generic. Every post must nudge the reader towards "Hokkaido as a strategic choice".
 
-TONE Style: ${style}.`;
+PLATFORM-SPECIFIC RULES (Style: ${style}):
+- IF STYLE IS "THREADS": Create a sharp, conversational hook followed by 3-4 distinct info blocks. Use a tone that invites discussion.
+- IF STYLE IS "INSTAGRAM": Poetic imagery + concise, evocative text. Focus on the 'dream' of the property.
+
+GENERAL GUIDELINES:
+- BE PURPOSEFUL: Connect every topic to the "Why Hokkaido?" conclusion.
+- MULTI-LINGUAL: Native-level flow in Japanese, Chinese, and English.`;
 
     const conceptPrompt = `You are a creative Real Estate Visionary and Copywriter.
 Your goal is to build a professional property concept and promotion material from scratch OR from a floor plan image provided by the user.
@@ -186,10 +190,14 @@ YOUR TASK:
    - An **SEO Description**.
    - A descriptive, creative **SNS Copy** that paints a picture of living in this property.
    - Structured **Property Details** (Proffered/Planned specs).
-
 STYLE: ${style}. Be creative, imaginative, yet remain realistic enough for a real estate listing.`;
 
-    const systemPrompt = `${mode === 'property' ? propertyPrompt : mode === 'concept' ? conceptPrompt : lifePrompt}
+    let systemPrompt = "";
+    if (mode === 'property') systemPrompt = propertyPrompt;
+    else if (mode === 'concept') systemPrompt = conceptPrompt;
+    else systemPrompt = topicPrompt;
+
+    systemPrompt += `
 For each language (zh, en, ja), generate the output in the matching JSON format.
 
 ${(mode === 'property' || mode === 'concept') ? `For property-related modes, output JSON MUST strictly follow this type structure:
@@ -201,7 +209,7 @@ ${(mode === 'property' || mode === 'concept') ? `For property-related modes, out
     "hashtags": ["标签1", "标签2"],
     "propertyDetails": {
       "overview": "项目概览/简介...",
-      "location": "地理位置与交通可达性...",
+      "location": "地理位置 with 交通可达性...",
       "specifications": "物业规格与面積参数...",
       "onsen": "温泉/泉眼及涌出量信息 (若无则写 N/A)...",
       "infrastructure": "基础设施、改建履歴及开发潜力说明..."
@@ -233,11 +241,20 @@ ${(mode === 'property' || mode === 'concept') ? `For property-related modes, out
       "infrastructure": "インフラ・改修履歴・備考・開発ポテンシャルなど..."
     }
   }
-}` : `For 'life' mode, output JSON MUST follow this structure:
+}` : `For 'life' (topic) mode, output JSON MUST follow this structure:
 {
-  "zh": { "title": "标题", "content": "内容文案...", "hashtags": ["...", "..."] },
-  "en": { "title": "Title", "content": "Body text...", "hashtags": ["...", "..."] },
-  "ja": { "title": "タイトル", "content": "本文...", "hashtags": ["...", "..."] }
+  "zh": { 
+    "title": "标题", "content": "核心推文内容...", "hashtags": ["...", "..."], "visualSuggestion": "建议配图描述...",
+    "analysisPoints": [{ "label": "分析角度", "content": "背景与深度解析..." }]
+  },
+  "en": { 
+    "title": "Title", "content": "Core copy...", "hashtags": ["...", "..."], "visualSuggestion": "Visual suggestion...",
+    "analysisPoints": [{ "label": "Analysis angle", "content": "Analysis content..." }]
+  },
+  "ja": { 
+    "title": "タイトル", "content": "本文案...", "hashtags": ["...", "..."], "visualSuggestion": "推奨ビジュアル...",
+    "analysisPoints": [{ "label": "分析ポイント", "content": "深い分析情報..." }]
+  }
 }`}
 
 Return ONLY a single valid JSON object. No markdown block wrapper, no leading or trailing text.`;
@@ -256,6 +273,7 @@ Return ONLY a single valid JSON object. No markdown block wrapper, no leading or
       ],
       config: {
         responseMimeType: "application/json",
+        tools: mode === 'life' ? [{ googleSearch: {} }] : undefined,
       },
     });
 

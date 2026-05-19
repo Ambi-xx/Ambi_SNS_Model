@@ -6,11 +6,18 @@ export interface PropertyDetails {
   infrastructure?: string;
 }
 
+export interface AnalysisPoint {
+  label: string;
+  content: string;
+}
+
 export interface GeneratedPost {
   title: string;
   content: string;
   hashtags: string[];
   seoDescription?: string;
+  visualSuggestion?: string;
+  analysisPoints?: AnalysisPoint[];
   propertyDetails?: PropertyDetails;
 }
 

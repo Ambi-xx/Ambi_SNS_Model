@@ -242,7 +242,7 @@ export default function App() {
 
   if (selectedFlow === null) {
     return (
-      <div className="h-screen w-full flex flex-col items-center justify-center bg-slate-950 text-white relative p-6 overflow-hidden">
+      <div className="min-h-screen w-full flex flex-col items-center justify-start md:justify-center bg-slate-950 text-white relative p-6 py-12 md:py-6 overflow-x-hidden">
         {/* Glow Effects */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(79,70,229,0.12)_0%,transparent_70%)] pointer-events-none" />
         <div className="absolute top-[-10%] left-[-10%] w-[45%] aspect-square rounded-full bg-indigo-500/8 blur-[100px] pointer-events-none animate-pulse" />
@@ -277,7 +277,7 @@ export default function App() {
           </motion.p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-5 w-full max-w-6xl z-10 px-4">
+        <div className="grid md:grid-cols-3 gap-5 w-full max-w-6xl z-10 px-4 pb-20 md:pb-0">
           {/* Card 1: Property Analysis */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -338,7 +338,7 @@ export default function App() {
             </div>
           </motion.div>
 
-          {/* Card 3: Lifestyle */}
+          {/* Card 3: Real Estate Topics & Trends */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -346,25 +346,26 @@ export default function App() {
             onClick={() => {
               setSelectedFlow('life');
               setMode('life');
+              setStyle('threads');
             }}
             className="group relative bg-slate-900/40 border border-slate-800 rounded-3xl p-8 cursor-pointer hover:border-cyan-500 hover:bg-slate-900/80 transition-all duration-300 flex flex-col justify-between hover:shadow-[0_0_40px_rgba(6,182,212,0.15)] h-[350px]"
           >
             <div className="space-y-5">
               <div className="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:bg-cyan-500 group-hover:text-white transition-all duration-300">
-                <Coffee size={28} />
+                <Brain size={28} />
               </div>
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <h3 className="text-xl font-bold text-white group-hover:text-cyan-300 transition-colors">日常ライフスタイル</h3>
-                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-bold uppercase">写真連動</span>
+                  <h3 className="text-xl font-bold text-white group-hover:text-cyan-300 transition-colors">不動産話題・トレンド分析</h3>
+                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-bold uppercase">経済・政策分析</span>
                 </div>
                 <p className="text-xs text-slate-400 leading-relaxed">
-                  日常の写真から情感豊かなメッセージを生成。個人のブランディングやSNS運営をサポートします。
+                  「なぜ今、北海道なのか？」といった話題を経済・政策・気候などの多角的な視点からAIが深く分析。信頼感のある投稿を生成します。
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-2 text-xs font-bold text-cyan-400 group-hover:text-cyan-300 pt-4 border-t border-slate-800/50 mt-4">
-              写真から投稿を作成 →
+              話題を深く掘り下げて投稿 →
             </div>
           </motion.div>
         </div>
@@ -486,9 +487,9 @@ export default function App() {
           <div className="w-9" /> {/* Spacer for centering */}
         </header>
 
-        <main className="flex-1 grid grid-cols-1 lg:grid-cols-[1fr_310px] gap-4 p-3 md:p-4 lg:overflow-hidden relative lg:custom-scrollbar">
+        <main className="flex-1 grid grid-cols-1 lg:grid-cols-[1fr_310px] gap-4 p-3 md:p-4 overflow-y-auto lg:overflow-hidden relative custom-scrollbar">
         {/* Workspace */}
-        <div className="flex flex-col gap-4 lg:overflow-y-auto lg:pr-2 custom-scrollbar text-brand-text-main shrink-0">
+        <div className="flex flex-col gap-4 lg:overflow-y-auto lg:pr-2 custom-scrollbar text-brand-text-main">
           {activeTab === 'dashboard' && (
             <motion.div 
               initial={{ opacity: 0, x: -10 }}
@@ -498,7 +499,7 @@ export default function App() {
               <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <h3 className="text-[11px] font-bold text-brand-text-muted uppercase tracking-widest flex items-center gap-2">
                   <Sparkles size={13} className={mode === 'property' ? 'text-indigo-500' : mode === 'concept' ? 'text-emerald-500' : 'text-cyan-500'} />
-                  {mode === 'property' ? '物件解析' : mode === 'concept' ? 'AI物件着想' : 'ライフスタイル'}
+                  {mode === 'property' ? '物件解析' : mode === 'concept' ? 'AI物件着想' : '話題・トレンド'}
                 </h3>
                 
                 <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 overflow-x-auto pb-1 md:pb-0 hide-scrollbar">
@@ -526,7 +527,7 @@ export default function App() {
                         mode === 'life' ? 'bg-cyan-600 text-white shadow-sm' : 'text-brand-text-muted hover:bg-slate-100'
                       }`}
                     >
-                      ライフ
+                      話題・トレンド
                     </button>
                   </div>
 
@@ -534,26 +535,48 @@ export default function App() {
 
                   {/* Tone Styles */}
                   <div className="flex gap-1 items-center shrink-0">
-                    {[
-                      { id: 'professional', label: 'プロフェッショナル', icon: <Building2 size={12} /> },
-                      { id: 'friendly', label: 'フレンドリー', icon: <Coffee size={12} /> },
-                      { id: 'storyteller', label: 'ストーリーテラー', icon: <Brain size={12} /> },
-                      { id: 'minimalist', label: 'ミニマリスト', icon: <Zap size={12} /> },
-                    ].map((t) => (
-                      <button
-                        key={t.id}
-                        onClick={() => setStyle(t.id as ToneStyle)}
-                        title={t.label}
-                        className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border transition-all ${
-                          style === t.id 
-                            ? 'bg-white border-brand-primary/30 text-brand-primary shadow-sm' 
-                            : 'bg-transparent border-transparent text-slate-400 hover:text-slate-600 hover:bg-slate-100'
-                        }`}
-                      >
-                        {t.icon}
-                        <span className="text-[10px] font-bold tracking-tight">{t.label}</span>
-                      </button>
-                    ))}
+                    {mode === 'life' ? (
+                      // Custom styles for Topic/Trend mode
+                      [
+                        { id: 'threads', label: 'Threads (話題・対話)', icon: <Send size={12} /> },
+                        { id: 'instagram', label: 'Instagram (美しさ・Poetic)', icon: <Instagram size={12} /> },
+                      ].map((t) => (
+                        <button
+                          key={t.id}
+                          onClick={() => setStyle(t.id as any)}
+                          title={t.label}
+                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-bold transition-all ${
+                            style === t.id 
+                              ? 'bg-cyan-600 border-cyan-500 text-white shadow-sm' 
+                              : 'bg-white border-brand-border text-slate-500 hover:bg-slate-50'
+                          }`}
+                        >
+                          {t.icon}
+                          <span className="hidden md:inline">{t.label}</span>
+                        </button>
+                      ))
+                    ) : (
+                      [
+                        { id: 'professional', label: 'プロフェッショナル', icon: <Building2 size={12} /> },
+                        { id: 'friendly', label: 'フレンドリー', icon: <Coffee size={12} /> },
+                        { id: 'storyteller', label: 'ストーリーテラー', icon: <Brain size={12} /> },
+                        { id: 'minimalist', label: 'ミニマリスト', icon: <Zap size={12} /> },
+                      ].map((t) => (
+                        <button
+                          key={t.id}
+                          onClick={() => setStyle(t.id as ToneStyle)}
+                          title={t.label}
+                          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border transition-all ${
+                            style === t.id 
+                              ? 'bg-white border-brand-primary/30 text-brand-primary shadow-sm' 
+                              : 'bg-transparent border-transparent text-slate-400 hover:text-slate-600 hover:bg-slate-100'
+                          }`}
+                        >
+                          {t.icon}
+                          <span className="text-[10px] font-bold tracking-tight">{t.label}</span>
+                        </button>
+                      ))
+                    )}
                   </div>
                 </div>
               </header>
@@ -602,20 +625,20 @@ export default function App() {
                     </div>
                   </div>
                 ) : (
-                  <div 
-                    {...getRootProps()} 
-                    id="life-dropzone"
-                    className={`bg-white border-2 border-dashed rounded-2xl p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:border-cyan-500 hover:bg-cyan-50/5 transition-all w-full focus:outline-none ${
-                      isDragActive ? 'border-cyan-500 bg-cyan-50/10' : 'border-brand-border'
-                    }`}
-                  >
-                    <input {...getInputProps()} />
-                    <div className="w-10 h-10 rounded-full bg-cyan-50 flex items-center justify-center text-cyan-500 mb-2">
-                      <ImageIcon size={20} />
+                    <div 
+                      {...getRootProps()} 
+                      id="life-dropzone"
+                      className={`bg-white border-2 border-dashed rounded-2xl p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:border-cyan-500 hover:bg-cyan-50/5 transition-all w-full focus:outline-none ${
+                        isDragActive ? 'border-cyan-500 bg-cyan-50/10' : 'border-brand-border'
+                      }`}
+                    >
+                      <input {...getInputProps()} />
+                      <div className="w-10 h-10 rounded-full bg-cyan-50 flex items-center justify-center text-cyan-500 mb-2">
+                        <ImageIcon size={20} />
+                      </div>
+                      <h3 className="text-xs font-bold text-slate-800 tracking-tight">イメージ写真（任意）</h3>
+                      <p className="text-[10px] text-slate-400 mt-1">アップロードすると写真の内容も分析に反映されます</p>
                     </div>
-                    <h3 className="text-xs font-bold text-slate-800 tracking-tight">日常スナップ写真をアップロード</h3>
-                    <p className="text-[10px] text-slate-400 mt-1">シーン解析からのエモーショナル生成</p>
-                  </div>
                 )}
               </section>
 
@@ -894,12 +917,20 @@ export default function App() {
                             ? "【物件の詳細あるいはコピペ入力】\n物件名、所在地、敷地面積、価格、交通アクセスなどの手動コピペや、アピールしたいセリングポイントを自由に入力してください。上のPDF資料インポートと併用可能です..."
                             : mode === 'concept'
                             ? "【AI企画・着想プロンプト（任意）】\n「高級感のある2LDK」「森に囲まれたサウナ付き別荘」など、アイデアを自由に入力してください。資料や写真がなくても、AIが魅力的なコンセプトを提案します..."
-                            : "【日常のつぶやき・コメント（任意）】\n写真に関するメモや、今日あった出来事、伝えたい気分、ハッシュタグに入れたいキーワードなどを自由に入力してください。空欄でも写真からAIが自由に生成します..."
+                            : "【話題・キーワードを入力】\n例：外国人が日本で不動産を買う魅力、円安と投資価値、北海道の避暑地としてのポテンシャル、タイなどの暑い国からの需要など...\nAIが背景データを分析して、目的を持った投稿を生成します..."
                         }
-                        className="w-full min-h-[140px] p-4 bg-slate-50 border border-brand-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/20 transition-all resize-none font-medium text-brand-text-main"
+                        className={`w-full min-h-[180px] p-4 bg-slate-50 border rounded-xl text-sm focus:outline-none transition-all resize-none font-medium text-brand-text-main ${
+                          mode === 'life' ? 'border-cyan-200 focus:ring-cyan-500/20 focus:bg-white' : 'border-brand-border focus:ring-brand-primary/20'
+                        }`}
                       />
 
                       <div className="flex flex-wrap gap-2 justify-end items-center p-2">
+                        {mode === 'life' && (
+                          <div className="mr-auto text-[10px] text-cyan-600 font-bold flex items-center gap-1">
+                            <Brain size={12} />
+                            Google Search 背景データ分析を適用中
+                          </div>
+                        )}
                         <div className="flex items-center gap-2">
                           <button 
                             type="button"
@@ -914,13 +945,15 @@ export default function App() {
                           <button 
                             type="button"
                             onClick={handleGenerate}
-                            disabled={isGenerating}
+                            disabled={isGenerating || (!description && assets.length === 0)}
                             className={`text-[11px] font-bold text-white px-5 py-2 rounded-xl transition-all cursor-pointer shadow-sm flex items-center gap-2 ${
-                              isGenerating ? 'bg-brand-primary/70' : 'bg-brand-primary hover:bg-brand-primary/90'
+                              mode === 'life' 
+                                ? (isGenerating ? 'bg-cyan-600/70' : 'bg-cyan-600 hover:bg-cyan-700')
+                                : (isGenerating ? 'bg-brand-primary/70' : 'bg-brand-primary hover:bg-brand-primary/90')
                             }`}
                           >
                             {isGenerating ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />}
-                            {mode === 'concept' ? 'コンセプト生成' : mode === 'life' ? '投稿を作成' : '文案生成'}
+                            {mode === 'concept' ? 'コンセプト生成' : mode === 'life' ? '話題を分析して投稿作成' : '文案生成'}
                           </button>
                         </div>
                       </div>
@@ -928,24 +961,30 @@ export default function App() {
                   )}
 
               {/* Action Bar */}
-              <div className="mt-auto bg-white border border-brand-border p-4 rounded-xl shadow-card flex items-center justify-between">
+              <div className={`mt-auto bg-white border p-4 rounded-xl shadow-card flex items-center justify-between transition-colors ${
+                mode === 'life' ? 'border-cyan-100' : mode === 'concept' ? 'border-emerald-100' : 'border-brand-border'
+              }`}>
                 <div className="text-[12px] text-brand-text-muted">
-                  <strong className="text-brand-text-main">Instagram, Twitter, FB</strong> への投稿準備
+                  <strong className="text-brand-text-main">
+                    {mode === 'life' ? 'Threads, Instagram' : 'Instagram, Twitter, FB'}
+                  </strong> への投稿準備
                 </div>
                 
                 <button 
                   onClick={handleGenerate}
-                  disabled={isGenerating}
-                  className="bg-brand-primary text-white px-6 py-2.5 rounded-lg font-semibold text-sm flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all disabled:opacity-50"
+                  disabled={isGenerating || (mode !== 'concept' && !description && assets.length === 0)}
+                  className={`${
+                    mode === 'life' ? 'bg-cyan-600' : mode === 'concept' ? 'bg-emerald-600' : 'bg-brand-primary'
+                  } text-white px-6 py-2.5 rounded-lg font-semibold text-sm flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all disabled:opacity-50 border-none cursor-pointer`}
                 >
                   {isGenerating ? (
                     <>
                       <Loader2 className="animate-spin" size={16} />
-                      生成中...
+                      分析中...
                     </>
                   ) : (
                     <>
-                      すべてのバリエーションを生成
+                      {mode === 'life' ? '投稿バリエーションを生成' : 'すべてのバリエーションを生成'}
                     </>
                   )}
                 </button>
@@ -1331,7 +1370,7 @@ export default function App() {
                     <div className="text-[13px] font-bold">global_creator_pro</div>
                   </div>
 
-                  <div className="aspect-square bg-slate-100 flex items-center justify-center overflow-hidden">
+                  <div className="aspect-square bg-slate-100 flex items-center justify-center overflow-hidden relative">
                     {assets.find(a => a.type === 'image') ? (
                       <img 
                         src={assets.find(a => a.type === 'image')?.preview} 
@@ -1345,9 +1384,19 @@ export default function App() {
                         <span className="text-[10px] font-bold tracking-widest text-indigo-600">PREMIUM LANDING IMAGE</span>
                       </div>
                     ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-cyan-500/10 via-cyan-600/5 to-slate-900/5 flex flex-col items-center justify-center text-cyan-500 gap-2 p-6">
+                      <div className="w-full h-full bg-gradient-to-br from-cyan-500/10 via-cyan-600/5 to-slate-900/5 flex flex-col items-center justify-center text-cyan-500 gap-3 p-8 text-center">
                         <ImageIcon size={40} className="text-cyan-600" />
-                        <span className="text-[10px] font-bold tracking-widest text-cyan-600">DAILY STORY SNAPSHOT</span>
+                        {results[activeLanguage]?.visualSuggestion ? (
+                          <div className="flex flex-col gap-2">
+                            <span className="text-[10px] font-bold tracking-widest text-cyan-600 uppercase">AI Suggested Visual</span>
+                            <p className="text-[11px] text-slate-500 leading-relaxed italic">
+                              "{results[activeLanguage].visualSuggestion}"
+                            </p>
+                            <span className="text-[9px] text-slate-400">※ このイメージに合う写真を用意するか、AIで生成してください</span>
+                          </div>
+                        ) : (
+                          <span className="text-[10px] font-bold tracking-widest text-cyan-600">DAILY STORY SNAPSHOT</span>
+                        )}
                       </div>
                     )}
                   </div>
@@ -1380,6 +1429,32 @@ export default function App() {
                         }}
                       />
                     </div>
+
+                    {/* Analysis Points for Topic/Trend mode */}
+                    {mode === 'life' && results[activeLanguage].analysisPoints && results[activeLanguage].analysisPoints.length > 0 && (
+                      <div className="mt-6 border-t border-slate-100 pt-5 flex flex-col gap-4">
+                        <div className="flex items-center gap-2 text-cyan-600">
+                          <Brain size={16} />
+                          <span className="text-xs font-bold tracking-tight uppercase">深層分析キーワード & 背景解説</span>
+                        </div>
+                        <div className="space-y-3">
+                          {results[activeLanguage].analysisPoints.map((point, idx) => (
+                            <div key={idx} className="bg-cyan-50/30 rounded-xl p-3 border border-cyan-100/50">
+                              <h4 className="text-[11px] font-bold text-cyan-700 mb-1 flex items-center gap-1.5">
+                                <span className="w-4 h-4 rounded bg-cyan-600 text-white flex items-center justify-center text-[10px]">{idx + 1}</span>
+                                {point.label}
+                              </h4>
+                              <p className="text-[11px] text-slate-600 leading-relaxed">
+                                {point.content}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                        <p className="text-[9px] text-slate-400 text-center italic mt-1">
+                          ※ これらの分点を個別に投稿のテーマとして再利用可能です
+                        </p>
+                      </div>
+                    )}
                   </div>
 
                   <div className="p-3 mt-auto bg-white border-t flex flex-col gap-2">
