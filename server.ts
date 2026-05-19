@@ -291,6 +291,11 @@ async function startServer() {
   });
 }
 
-startServer().catch(err => {
-  console.error("Server startup error:", err);
-});
+// For Vercel, we export the app
+export default app;
+
+if (process.env.NODE_ENV !== "production" || !process.env.VERCEL) {
+  startServer().catch(err => {
+    console.error("Server startup error:", err);
+  });
+}
