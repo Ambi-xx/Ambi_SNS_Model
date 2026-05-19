@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { extractTextFromPdf, pdfToImages } from './lib/pdf';
+import { resizeImage } from './lib/images';
 import { generateSocialPosts, cleanAndStructurePdfText, GenerationResult, GenerationMode, ToneStyle } from './lib/gemini';
 
 interface PropertyAsset {
@@ -134,11 +135,13 @@ export default function App() {
           let pdfPages: string[] = [];
 
           if (type === 'image') {
-            preview = await new Promise((resolve) => {
+            const base64 = await new Promise<string>((resolve) => {
               const reader = new FileReader();
               reader.onload = (e) => resolve(e.target?.result as string);
               reader.readAsDataURL(file);
             });
+            // Resize image to max 1024px to stay under Vercel payload limits
+            preview = await resizeImage(base64, 1024, 1024, 0.6);
           } else if (type === 'pdf') {
             content = await extractTextFromPdf(file);
             preview = 'PDF_PLACEHOLDER';

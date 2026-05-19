@@ -34,8 +34,18 @@ export async function cleanAndStructurePdfText(rawText: string, pageImages?: str
   });
 
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Failed to clean PDF text');
+    let errorMessage = 'Failed to clean PDF text';
+    try {
+      const error = await response.json();
+      errorMessage = error.error || errorMessage;
+    } catch (e) {
+      if (response.status === 413) {
+        errorMessage = 'PDF too complex: The file content is too large for the server. (413 Payload Too Large)';
+      } else {
+        errorMessage = `Error ${response.status}: ${response.statusText}`;
+      }
+    }
+    throw new Error(errorMessage);
   }
 
   const data = await response.json();
@@ -55,8 +65,19 @@ export async function generateSocialPosts(
   });
 
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Failed to generate social posts');
+    let errorMessage = 'Failed to generate social posts';
+    try {
+      const error = await response.json();
+      errorMessage = error.error || errorMessage;
+    } catch (e) {
+      // If it's not JSON, it might be a 413 or other HTML error
+      if (response.status === 413) {
+        errorMessage = 'Upload failed: The files are too large for the server. (413 Payload Too Large)';
+      } else {
+        errorMessage = `Error ${response.status}: ${response.statusText}`;
+      }
+    }
+    throw new Error(errorMessage);
   }
 
   return response.json();
