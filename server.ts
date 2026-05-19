@@ -12,6 +12,12 @@ const PORT = 3000;
 // Increase payload size for base64 images
 app.use(express.json({ limit: '50mb' }));
 
+console.log("Server environment check:", {
+  NODE_ENV: process.env.NODE_ENV,
+  VERCEL: process.env.VERCEL,
+  HAS_GEMINI_KEY: !!process.env.GEMINI_API_KEY
+});
+
 if (!process.env.GEMINI_API_KEY) {
   console.warn("⚠️ WARNING: GEMINI_API_KEY is not defined in process.env");
 }
