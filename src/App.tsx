@@ -479,10 +479,10 @@ export default function App() {
                   {/* Tone Styles */}
                   <div className="flex gap-1 items-center">
                     {[
-                      { id: 'professional', label: 'プロ', icon: <Building2 size={12} /> },
+                      { id: 'professional', label: 'プロフェッショナル', icon: <Building2 size={12} /> },
                       { id: 'friendly', label: 'フレンドリー', icon: <Coffee size={12} /> },
-                      { id: 'storyteller', label: 'ストーリー', icon: <Brain size={12} /> },
-                      { id: 'minimalist', label: 'ミニマル', icon: <Zap size={12} /> },
+                      { id: 'storyteller', label: 'ストーリーテラー', icon: <Brain size={12} /> },
+                      { id: 'minimalist', label: 'ミニマリスト', icon: <Zap size={12} /> },
                     ].map((t) => (
                       <button
                         key={t.id}
@@ -615,7 +615,7 @@ export default function App() {
                              PDFデータ抽出・推敲ワークスペース（2画面構成）
                           </h4>
                           <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">
-                            【窓①】に自動抽出された物件の元の文字データが表示されます。文字化けや抜け落ちがないか<strong>「检查一下是不是完整的」</strong>（内容の過不足を確認して直接キーボード修正）したあとに、緑色や青色のボタンを選んで【窓②（物件情報テンプレート）】に<strong>「运用到模板里面」</strong>（適用）してください。
+                            【窓①】に自動抽出された物件の元の文字データが表示されます。文字化けや抜け落ちがないか<strong>内容の過不足を確認して直接修正</strong>したあとに、緑色や青色のボタンを選んで【窓②（物件情報テンプレート）】に<strong>テンプレートへ適用</strong>してください。
                           </p>
                         </div>
                       </div>
@@ -640,7 +640,7 @@ export default function App() {
                               <FileText size={12} className={isSelected ? 'text-white' : 'text-indigo-500'} />
                               <span className="max-w-[200px] truncate">{pdfAsset.file.name}</span>
                               <span className={`text-[9px] px-1.5 py-0.2 rounded-full ${isSelected ? 'bg-indigo-700 text-indigo-100' : 'bg-slate-100 text-slate-500'}`}>
-                                {countOfChars}文字已抽出
+                                {countOfChars}文字 抽出済み
                               </span>
                             </button>
                           );
@@ -1064,7 +1064,7 @@ export default function App() {
                         <Building2 size={18} />
                       </div>
                       <div>
-                        <div className="text-xs font-bold text-indigo-600">STRUCTURED EXPORT</div>
+                        <div className="text-xs font-bold text-indigo-600">構造化データ出力 (AUTO EXPORT)</div>
                         <div className="text-[10px] text-slate-400">データ自動抽出・多言語翻訳</div>
                       </div>
                     </div>
@@ -1085,7 +1085,7 @@ export default function App() {
                   {/* 1. SEO Description */}
                   <div className="bg-slate-50/50 rounded-xl p-3 border border-slate-100 flex flex-col gap-1.5 focus-within:border-brand-primary/40 transition-all">
                     <div className="flex items-center justify-between">
-                      <div className="text-[11px] font-bold text-indigo-600 tracking-wider">1. SEO DESCRIPTION (<span className="font-mono">160文字以内</span>)</div>
+                      <div className="text-[11px] font-bold text-indigo-600 tracking-wider">1. SEO用説明文 (<span className="font-mono">160文字以内</span>)</div>
                       <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
                         (results[activeLanguage].seoDescription?.length || 0) <= 160 ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-500'
                       }`}>
@@ -1112,7 +1112,7 @@ export default function App() {
                   {/* 2. Property Title */}
                   <div className="bg-slate-50/50 rounded-xl p-3 border border-slate-100 flex flex-col gap-1.5">
                     <div className="flex items-center justify-between">
-                      <div className="text-[11px] font-bold text-indigo-600 tracking-wider">2. PROPERTY TITLE (<span className="font-mono">70文字以内</span>)</div>
+                      <div className="text-[11px] font-bold text-indigo-600 tracking-wider">2. 物件タイトル (<span className="font-mono">70文字以内</span>)</div>
                       <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
                         (results[activeLanguage].title?.length || 0) <= 70 ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-500'
                       }`}>
@@ -1138,14 +1138,14 @@ export default function App() {
 
                   {/* 3. Property Details & Introduction */}
                   <div className="flex flex-col gap-2">
-                    <div className="text-[11px] font-bold text-indigo-600 tracking-wider">3. PROPERTY DETAILS & INTRO (紹介内容)</div>
+                    <div className="text-[11px] font-bold text-indigo-600 tracking-wider">3. 物件詳細・紹介内容</div>
                     
                     {/* Sub-sections */}
                     <div className="space-y-3">
                       {/* Overview */}
                       {results[activeLanguage].propertyDetails?.overview && (
                         <div className="bg-white border rounded-xl p-3 hover:shadow-sm transition-all relative group">
-                          <div className="text-[10px] font-bold text-slate-400 mb-1">OVERVIEW</div>
+                          <div className="text-[10px] font-bold text-slate-400 mb-1">概要 (OVERVIEW)</div>
                           <textarea 
                             value={results[activeLanguage].propertyDetails?.overview}
                             onChange={(e) => handleResultUpdate(activeLanguage, 'propertyDetails', e.target.value, 'overview')}
@@ -1164,7 +1164,7 @@ export default function App() {
                       {/* Location */}
                       {results[activeLanguage].propertyDetails?.location && (
                         <div className="bg-white border rounded-xl p-3 hover:shadow-sm transition-all relative group">
-                          <div className="text-[10px] font-bold text-slate-400 mb-1">LOCATION & ACCESSIBILITY</div>
+                          <div className="text-[10px] font-bold text-slate-400 mb-1">所在地・交通アクセス</div>
                           <textarea 
                             value={results[activeLanguage].propertyDetails?.location}
                             onChange={(e) => handleResultUpdate(activeLanguage, 'propertyDetails', e.target.value, 'location')}
@@ -1183,7 +1183,7 @@ export default function App() {
                       {/* Specifications */}
                       {results[activeLanguage].propertyDetails?.specifications && (
                         <div className="bg-white border rounded-xl p-3 hover:shadow-sm transition-all relative group">
-                          <div className="text-[10px] font-bold text-slate-400 mb-1">PROPERTY SPECIFICATIONS</div>
+                          <div className="text-[10px] font-bold text-slate-400 mb-1">物件詳細スペック</div>
                           <textarea 
                             value={results[activeLanguage].propertyDetails?.specifications}
                             onChange={(e) => handleResultUpdate(activeLanguage, 'propertyDetails', e.target.value, 'specifications')}
@@ -1202,7 +1202,7 @@ export default function App() {
                       {/* Onsen */}
                       {results[activeLanguage].propertyDetails?.onsen && (
                         <div className="bg-amber-50/50 border border-amber-100 rounded-xl p-3 hover:shadow-sm transition-all relative group">
-                          <div className="text-[10px] font-bold text-amber-600 mb-1">NATURAL HOT SPRINGS (温泉源泉)</div>
+                          <div className="text-[10px] font-bold text-amber-600 mb-1">天然温泉・源泉情報</div>
                           <textarea 
                             value={results[activeLanguage].propertyDetails?.onsen}
                             onChange={(e) => handleResultUpdate(activeLanguage, 'propertyDetails', e.target.value, 'onsen')}
@@ -1221,7 +1221,7 @@ export default function App() {
                       {/* Infrastructure */}
                       {results[activeLanguage].propertyDetails?.infrastructure && (
                         <div className="bg-white border rounded-xl p-3 hover:shadow-sm transition-all relative group">
-                          <div className="text-[10px] font-bold text-slate-400 mb-1">INFRASTRUCTURE & REMARKS</div>
+                          <div className="text-[10px] font-bold text-slate-400 mb-1">インフラ・備考</div>
                           <textarea 
                             value={results[activeLanguage].propertyDetails?.infrastructure}
                             onChange={(e) => handleResultUpdate(activeLanguage, 'propertyDetails', e.target.value, 'infrastructure')}
@@ -1331,7 +1331,7 @@ export default function App() {
                       onClick={() => {
                         const fullText = `${results[activeLanguage].title}\n\n${results[activeLanguage].content}\n\n${results[activeLanguage].hashtags.map(t => '#' + t.replace(/^#/, '')).join(' ')}`;
                         copyToClipboard(fullText);
-                        alert('剪贴板にコピーしました (Copied to clipboard)');
+                        alert('クリップボードにコピーしました');
                       }}
                       className="w-full bg-brand-primary text-white py-3 rounded-xl text-sm font-bold hover:bg-brand-primary/90 transition-all flex items-center justify-center gap-2 shadow-lg active:scale-[0.98]"
                     >
