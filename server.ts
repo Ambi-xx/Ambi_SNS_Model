@@ -20,15 +20,10 @@ if (!process.env.GEMINI_API_KEY) {
 let ai: GoogleGenAI | null = null;
 function getAi() {
   if (!ai) {
-    const apiKey = (
-      process.env.GEMINI_API_KEY || 
-      process.env.GOOGLE_API_KEY || 
-      process.env.API_KEY ||
-      ""
-    ).trim();
+    const apiKey = (process.env.GEMINI_API_KEY || "").trim();
     
-    if (!apiKey || apiKey === "undefined" || apiKey === "null") {
-      throw new Error("GEMINI_API_KEY is missing. Please add your Gemini API key in the 'Settings > Secrets' panel (APIキーが設定されていません。設定 > シークレットパネルからGEMINI_API_KEYを追加してください)");
+    if (!apiKey || apiKey === "undefined" || apiKey === "null" || apiKey === "") {
+      throw new Error("GEMINI_API_KEY is missing. Please set it in your environment variables (Vercel: Settings > Environment Variables).");
     }
 
     ai = new GoogleGenAI({ 
@@ -45,16 +40,10 @@ function getAi() {
 
 // API Routes
 app.get("/api/health", (req, res) => {
-  const envKeys = Object.keys(process.env);
   res.json({ 
     status: "ok", 
-    hasGeminiKey: !!process.env.GEMINI_API_KEY,
-    hasGoogleKey: !!process.env.GOOGLE_API_KEY,
-    hasApiKey: !!process.env.API_KEY,
-    geminiKeyLength: process.env.GEMINI_API_KEY?.length || 0,
-    googleKeyLength: process.env.GOOGLE_API_KEY?.length || 0,
-    apiKeyLength: process.env.API_KEY?.length || 0,
-    allKeysFound: envKeys.filter(k => k.toLowerCase().includes('key')).join(', ')
+    hasApiKey: !!process.env.GEMINI_API_KEY,
+    apiKeyLength: process.env.GEMINI_API_KEY?.length || 0
   });
 });
 
